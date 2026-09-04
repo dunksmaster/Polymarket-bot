@@ -1,0 +1,64 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # Application logs from Docker volumes
+  - job_name: app-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: polymarket-app
+          __path__: /app/logs/*.log
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            message: message
+            timestamp: timestamp
+            service: service
+      - labels:
+          level:
+      - output:
+          source: message
+
+  # System logs
+  - job_name: system-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: system
+          __path__: /var/log/*.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>[\d\-:\sT\.]+)\s+(?P<level>\w+)\s+(?P<message>.*)$'
+      - labels:
+          level:
+      - output:
+          source: message
+
+  # Docker daemon logs
+  - job_name: docker-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker
+          __path__: /var/log/docker.log
+    pipeline_stages:
+      - json:
+          expressions:
+            stream: stream
+            log: log
+      - labels:
+          stream:
+      - output:
+          source: log
