@@ -1,29 +1,39 @@
 ```
-# Dependencies
-node_modules/
-
 # Environment
 .env
 .env.local
 .env.*
 
-# Compiled and build artifacts
-*.js.map
-_cjs/
-_esm/
-_types/
-
-# Logs and temp files
+# Logs and temporary files
 *.log
 *.tmp
+*.swp
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+
+# Build artifacts
+dist/
+build/
+target/
 
 # Editors
 .vscode/
 .idea/
 
-# OS generated files
+# System files
 .DS_Store
 Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
 
 # Compressed files
 *.zip
@@ -48,5 +58,4 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
 ```
